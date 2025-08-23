@@ -1,94 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      .hero {
+        position: relative;
+        background-image: url("assets/download.jpeg");
+        background-size: cover;
+        background-position: center;
+        height: 40vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+      }
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>
-    <%= title %>
-  </title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
 
-<body>
-  <!-- Start of Bootstrap Container -->
-  <div class="container-fluid">
+      .hero-content {
+        position: relative;
+        z-index: 2;
+      }
 
-    <!-- Start of Bootstrap Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary " data-bs-theme="dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <%= name %>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" onclick="window.location.href='/'">Home</a>
-            </li>
-          </ul>
+      .blog-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+      }
+
+      .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .blog-meta {
+        font-size: 0.85rem;
+        color: gray;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Container -->
+    <div class="container-fluid">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="/"><%= name %></a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link" onclick="window.location.href='/'">Home</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="hero">
+        <div class="hero-content text-center">
+          <h1 class="display-4 fw-bold"><%= name %></h1>
+          <h3><%= author %></h3>
+          <p class="lead"><%= sub_heading %></p>
         </div>
       </div>
-    </nav>
-    <!-- End of Bootstrap Navbar -->
 
-    <!-- Start of Bootstrap Background -->
-    <div class="bg-dark text-white text-center py-5"
-      style="background-image: url('assets/download.jpeg'); background-size: cover; background-position: center;">
-      <h1 class="display-4">
-        <%= name %>
-      </h1>
-      <h3 class="display-5">
-        <%= author %>
-      </h3>
-      <h5 class="display-8">
-        <%= sub_heading %>
-      </h5>
-    </div>
-    <!-- End of Bootstrap Background -->
-
-    <!-- Start of small Bootstrap Container -->
-    <div class="container-sm">
-      <ul class="list-group list-group-flush">
-        <% let publishedExists=false; %>
-          <% blogs.forEach(blog=> { %>
-            <% if (blog.status=='published' ) { %>
-              <li class="list-group-item" style="background-color: rgb(247, 247, 247)">
-                <h3>
-                  <a onclick="window.location.href = '/reader/blogs/<%= blog.id %>'">
-                    <%= blog.title %>
-                  </a>
-                </h3>
-                <p style="font-size: x-small; color: grey;">
-                  Published by: <%= blog.author_name %> on <%= blog.created_at %>
-                </p>     
-                <p>
-                  <%= blog.content %>
+      <!-- Blog List -->
+      <div class="container my-5">
+        <div class="row g-4">
+          <% let publishedExists=false; %> <% blogs.forEach(blog => { %> <% if
+          (blog.status=='published') { %>
+          <div class="col-md-6 col-lg-4">
+            <div
+              class="card blog-card h-100"
+              onclick="window.location.href='/reader/blogs/<%= blog.id %>'"
+            >
+              <div class="card-body">
+                <h4 class="card-title"><%= blog.title %></h4>
+                <p class="blog-meta">
+                  By <%= blog.author_name %> | <%= blog.created_at %>
                 </p>
-              </li>
-              <% publishedExists=true; %>
-                <% } %>
-                  <% }); %>
-                    <% if (!publishedExists) { %>
-                      <p>No Blogs yet.</p>
-                      <% } %>
-      </ul>
+                <p class="card-text text-muted">
+                  <%= blog.content.substring(0, 120) %>...
+                </p>
+              </div>
+            </div>
+          </div>
+          <% publishedExists=true; %> <% } %> <% }); %> <% if (!publishedExists)
+          { %>
+          <div class="text-center py-5">
+            <p class="text-muted fs-5">No blogs published yet.</p>
+          </div>
+          <% } %>
+        </div>
+      </div>
     </div>
-    <!-- End of small Bootstrap Container -->
+    <!-- End Container -->
 
-  </div>
-  <!-- End of Bootstrap Container -->
-
-  <!-- Start of Bootstrap JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <!-- End of Bootstrap JavaScript -->
-   
-</body>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
