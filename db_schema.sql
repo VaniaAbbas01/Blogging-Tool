@@ -7,15 +7,23 @@ BEGIN TRANSACTION;
 -- Create your tables with SQL commands here (watch out for slight syntactical differences with SQLite vs MySQL)
 
 /* START OF SELF WRITTEN TABLES  */
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE
+    );
+
     CREATE TABLE IF NOT EXISTS blogs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         status TEXT NOT NULL CHECK (status IN ('rough', 'published')),
-        author_name TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
         created_at TEXT NOT NULL,
         published_at TEXT NOT NULL,
-        last_modified TEXT NOT NULL
+        last_modified TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
     );
 
     CREATE TABLE IF NOT EXISTS views (
@@ -26,11 +34,13 @@ BEGIN TRANSACTION;
 
     CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
         blog_id INTEGER,
         comment TEXT NOT NULL,
         commenter_name TEXT NOT NULL,
         commented_at TEXT NOT NULL,
         FOREIGN KEY (blog_id) REFERENCES blogs(id)
+        FOREIGN KEY (user_id) REFERENCES users(id)
     );
 
     CREATE TABLE IF NOT EXISTS likes (
