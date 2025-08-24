@@ -10,17 +10,8 @@ const authorizeUser = require("./authorizeUser");
     INPUT: user clicks on "Create a New Article" in Author Home Page
     OUTPUT:  new-article page rendered
 */
-router.get('/new', authorizeUser, (req, res) => {
-    res.render('new-article', {
-        title: 'Create New Blog',
-        name: "Pen Your Thoughts",
-        heading: "Create Your Story Here",
-        slot1: "Name Your Story",
-        slot2: "Content",
-        slot3: "Author Name",
-        button1: "Create",
-        button2: "Back to Blogs"
-    });
+router.get('/new', (req, res) => {
+    res.render('new-article');
 });
 
 /* 
@@ -28,7 +19,8 @@ router.get('/new', authorizeUser, (req, res) => {
     INPUT: user fills the form and creates an article
     OUTPUT: data about the new blog is inserted in database
 */
-router.post('/new', (req, res) => {
+router.post('/new', authorizeUser, (req, res) => {
+    const id = req.id;
     const { title, content } = req.body;
     const created_at = moment().format('YYYY-MM-DD HH:mm:ss');
     const modified_at = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -36,7 +28,7 @@ router.post('/new', (req, res) => {
     if (!title || !content) {
         return res.status(400).send("All Fields Are Required");
     }
-    db.run("INSERT INTO blogs (title, content, author_name, status, created_at, published_at, last_modified) VALUES (?, ?, 'Vania Abbas', ?, ?, 'Not Published', ?)", [title, content, status, created_at, modified_at], function (err) {
+    db.run("INSERT INTO blogs (title, content, status, created_at, user_id, published_at, last_modified) VALUES (?, ?, ?, ?, ?, 'Not Published', ?)", [title, content, status, created_at, id, modified_at], function (err) {
         if (err) {
             return console.log(err.message);
         }
@@ -75,17 +67,7 @@ router.get('/edit/:id', authorizeUser, (req, res) => {
         if (err) {
             return console.log(err.message);
         }
-        res.render('edit-article', {
-            title: 'Edit Article',
-            name: "Pen Your Thoughts",
-            nav1: "Home",
-            heading: "Edit Article ",
-            slot1: "Rename Your Blog",
-            slot2: "Content",
-            button1: "Save Changes",
-            button2: "Back To Article's Home Page",
-            blog: row
-        });
+        res.render('edit-article', { blog: row });
     });
 });
 
