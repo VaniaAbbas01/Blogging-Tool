@@ -10,9 +10,9 @@ const authorizeUser = require("./authorizeUser");
     OUTPUT: Author home page rendered
 */
 router.get("/blogs", authorizeUser, (req, res, next) => {
-    const id = req.id
+    const id = req.id;
     // Define the query
-    query = `SELECT blogs.id, blogs.title,
+    const query = `SELECT blogs.id, blogs.title,
      blogs.content, blogs.created_at, blogs.published_at, blogs.last_modified, blogs.status, 
      (SELECT COUNT(*) FROM likes WHERE blog_id = blogs.id) AS like_count, 
      (SELECT COUNT(*) FROM dislikes WHERE blog_id = blogs.id) AS dislike_count, 
