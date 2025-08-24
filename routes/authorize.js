@@ -31,7 +31,6 @@ router.post("/register", (req, res) => {
 });
 
 router.post("/login", (req, res, next) => {
-
     const { password, email, author_reader } = req.body;
     // Check if all fields are provided
     if (!password || !email || !author_reader) {
@@ -49,13 +48,15 @@ router.post("/login", (req, res, next) => {
                     return res.status(400).send("Invalid login or password");
                 }
 
-                const payload = { uid: row.id, role: author_reader.toLowerCase() };
+                const payload = { id: row.id, role: author_reader.toLowerCase() };
                 const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
 
                 console.log("User logged in successfully");
 
+
                 // Send token in cookie (preferred for web apps)
                 res.cookie("token", token, { httpOnly: true });
+
 
                 if (author_reader.toLowerCase() === "author") {
                     res.redirect('/author/blogs');
