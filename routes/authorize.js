@@ -51,7 +51,6 @@ router.post("/login", (req, res, next) => {
                 const payload = { id: row.id, role: author_reader.toLowerCase() };
                 const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
 
-
                 // Send token in cookie (preferred for web apps)
                 res.cookie("token", token, { httpOnly: true });
 
